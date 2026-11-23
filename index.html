@@ -269,8 +269,15 @@
     }
 
     h1, h2, h3 {
-      font-family: var(--font-heading);
+      font-family: var(--font-hero);
       letter-spacing: -0.025em;
+      text-transform: uppercase;
+    }
+
+    #about h2,
+    #about h3 {
+      font-family: var(--font-heading);
+      text-transform: none;
     }
 
     /* HERO — IDEA 1: DIRECTOR'S REEL */
@@ -284,52 +291,143 @@
       isolation: isolate;
     }
 
-    .hero::before,
-    .hero::after {
+    .hero-scene {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero-scene::before,
+    .hero-scene::after {
       content: '';
       position: absolute;
+      inset: 0;
+    }
+
+    .hero-scene::before {
+      background: radial-gradient(ellipse at 76% 54%, rgba(99, 55, 175, 0.2), transparent 48%);
+    }
+
+    .hero-scene::after {
+      background: linear-gradient(90deg, var(--bg) 0%, rgba(8, 6, 13, 0.9) 30%, rgba(8, 6, 13, 0.32) 67%, transparent 100%);
+    }
+
+    .hero-scene.is-paused .planet-surface {
+      animation-play-state: paused;
+    }
+
+    .video-open .hero-scene {
+      visibility: hidden;
+    }
+
+    .hero-avatar {
+      --rim-x: 0px;
+      --rim-y: 0px;
+      --rim-strength: 0;
+      position: absolute;
+      z-index: 2;
+      right: -8%;
+      bottom: -1%;
+      width: clamp(620px, 76vw, 1000px);
+      max-width: none;
+      height: auto;
+      opacity: 0.76;
+      filter:
+        drop-shadow(0 0 20px rgba(147, 51, 234, 0.16))
+        drop-shadow(var(--rim-x) var(--rim-y) calc(26px * var(--rim-strength)) rgba(192, 132, 252, var(--rim-strength)))
+        drop-shadow(0 0 38px rgba(147, 51, 234, calc(var(--rim-strength) * 0.42)));
+      transition: filter 0.4s ease;
+    }
+
+    .planet-orbit {
+      position: absolute;
+      top: 52%;
+      right: 2%;
+      width: clamp(440px, 54vw, 760px);
+      height: clamp(300px, 43vh, 500px);
+    }
+
+    .orbit-track {
+      position: absolute;
       top: 50%;
-      right: -2%;
-      width: clamp(300px, 42vw, 540px);
-      aspect-ratio: 1;
+      left: 50%;
+      z-index: 0;
+      width: 100%;
+      height: 72%;
+      border: 1px solid rgba(192, 132, 252, 0.17);
       border-radius: 50%;
+      box-shadow: 0 0 26px rgba(147, 51, 234, 0.12), inset 0 0 20px rgba(147, 51, 234, 0.06);
+      transform: translate(-50%, -50%) rotate(-17deg) rotateX(64deg);
+    }
+
+    .planet {
+      --planet-size: 64px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 1;
+      width: var(--planet-size);
+      height: var(--planet-size);
+      border-radius: 50%;
+      will-change: transform, filter, opacity;
+    }
+
+    .planet-surface {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 27% 32%, rgba(13, 10, 28, 0.72) 0 5%, transparent 6%),
+        radial-gradient(circle at 65% 24%, rgba(24, 16, 48, 0.64) 0 8%, transparent 9%),
+        radial-gradient(circle at 68% 66%, rgba(14, 10, 31, 0.68) 0 11%, transparent 12%),
+        radial-gradient(circle at 37% 71%, rgba(34, 20, 61, 0.76) 0 7%, transparent 8%),
+        radial-gradient(circle at 50% 48%, rgba(147, 107, 210, 0.92), rgba(71, 50, 119, 0.96) 58%, rgba(18, 14, 34, 0.98) 100%);
+      box-shadow: inset -10px -8px 18px rgba(4, 3, 10, 0.72), inset 5px 4px 12px rgba(216, 180, 254, 0.25), 0 0 24px rgba(147, 51, 234, 0.2);
+      animation: planetSurfaceSpin 28s linear infinite;
+    }
+
+    .planet-surface::before,
+    .planet-surface::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
       pointer-events: none;
-      z-index: -1;
     }
 
-    .hero::before {
-      transform: translateY(-50%);
+    .planet-surface::before {
       background:
-        radial-gradient(circle at 48% 42%, rgba(232, 121, 249, 0.18), transparent 25%),
-        radial-gradient(circle at 58% 52%, rgba(147, 51, 234, 0.24), transparent 58%);
-      filter: blur(12px);
-      animation: heroAura 6.5s cubic-bezier(0.37, 0, 0.2, 1) infinite alternate;
+        radial-gradient(ellipse at 21% 47%, rgba(193, 159, 231, 0.19) 0 2%, transparent 3%),
+        radial-gradient(ellipse at 73% 39%, rgba(12, 9, 27, 0.3) 0 3%, transparent 4%),
+        radial-gradient(ellipse at 43% 17%, rgba(205, 176, 236, 0.16) 0 2%, transparent 3%),
+        radial-gradient(ellipse at 44% 88%, rgba(14, 10, 30, 0.36) 0 4%, transparent 5%);
+      filter: blur(1px);
     }
 
-    .hero::after {
-      border: 1px solid rgba(192, 132, 252, 0.15);
-      box-shadow:
-        inset 0 0 48px rgba(147, 51, 234, 0.08),
-        0 0 48px rgba(147, 51, 234, 0.08);
-      background:
-        radial-gradient(circle at 50% 50%, transparent 57%, rgba(192, 132, 252, 0.1) 57.2%, transparent 57.7%),
-        radial-gradient(circle at 50% 50%, transparent 72%, rgba(192, 132, 252, 0.08) 72.2%, transparent 72.7%);
-      transform: translateY(-50%) rotate(-12deg);
-      animation: heroOrbit 38s linear infinite, heroRingBreath 6.5s ease-in-out infinite alternate;
+    .planet-surface::after {
+      background: linear-gradient(115deg, rgba(236, 221, 255, 0.24), transparent 38%, rgba(5, 3, 14, 0.34));
     }
 
-    @keyframes heroAura {
-      from { opacity: 0.5; scale: 0.91; filter: blur(18px); }
-      to { opacity: 1; scale: 1.08; filter: blur(8px); }
+    .planet:nth-of-type(3n) .planet-surface {
+      filter: hue-rotate(18deg) brightness(0.88);
+      animation-duration: 36s;
     }
 
-    @keyframes heroOrbit {
-      to { transform: translateY(-50%) rotate(348deg); }
+    .planet:nth-of-type(4n) .planet-surface {
+      filter: hue-rotate(-16deg) brightness(1.08);
+      animation-duration: 22s;
     }
 
-    @keyframes heroRingBreath {
-      from { opacity: 0.5; scale: 0.96; }
-      to { opacity: 1; scale: 1.035; }
+    @keyframes planetSurfaceSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hero > :not(.hero-scene) {
+      position: relative;
+      z-index: 3;
     }
 
     .hero-eyebrow {
@@ -1054,8 +1152,7 @@
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(6, 4, 10, 0.92);
-      backdrop-filter: blur(12px);
+      background: rgba(6, 4, 10, 0.97);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1064,6 +1161,11 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
+    }
+
+    .video-open .cursor-glow,
+    .video-open .scroll-progress {
+      visibility: hidden;
     }
 
     .modal.open {
@@ -1139,10 +1241,14 @@
         gap: 32px;
       }
 
-      .hero::before,
-      .hero::after {
-        right: -14%;
-        opacity: 0.65;
+      .hero-avatar {
+        right: -24%;
+        opacity: 0.63;
+      }
+
+      .planet-orbit {
+        right: -18%;
+        opacity: 0.78;
       }
     }
 
@@ -1155,11 +1261,23 @@
         max-width: 100%;
         font-size: clamp(3.15rem, 13vw, 5rem);
       }
-      .hero::before,
-      .hero::after {
-        right: -35%;
-        width: 340px;
-        opacity: 0.5;
+
+      .hero-scene::after {
+        background: linear-gradient(90deg, rgba(8, 6, 13, 0.86), rgba(8, 6, 13, 0.4) 72%, transparent);
+      }
+
+      .hero-avatar {
+        right: -68%;
+        width: 780px;
+        opacity: 0.42;
+      }
+
+      .planet-orbit {
+        top: 57%;
+        right: -64%;
+        width: 560px;
+        height: 330px;
+        opacity: 0.62;
       }
     }
 
@@ -1189,6 +1307,10 @@
 
       .cursor-glow {
         display: none;
+      }
+
+      .hero-avatar {
+        --rim-strength: 0 !important;
       }
     }
   </style>
@@ -1220,6 +1342,17 @@
 
   <main class="container">
     <section class="hero">
+      <div class="hero-scene" aria-hidden="true">
+        <img class="hero-avatar" src="assets/Designer.png" alt="" draggable="false" />
+        <div class="planet-orbit">
+          <span class="orbit-track"></span>
+          <span class="planet" data-phase="0.2" data-speed="0.000035" style="--planet-size: 104px"><span class="planet-surface"></span></span>
+          <span class="planet" data-phase="1.85" data-speed="0.000032" style="--planet-size: 66px"><span class="planet-surface"></span></span>
+          <span class="planet" data-phase="3.15" data-speed="0.000037" style="--planet-size: 84px"><span class="planet-surface"></span></span>
+          <span class="planet" data-phase="4.65" data-speed="0.00003" style="--planet-size: 48px"><span class="planet-surface"></span></span>
+          <span class="planet" data-phase="5.55" data-speed="0.000034" style="--planet-size: 58px"><span class="planet-surface"></span></span>
+        </div>
+      </div>
       <div class="hero-eyebrow reveal">
         <span class="pulse"></span>
         <span>R6 ANIMATOR • MOON ANIMATOR • DIRECTOR'S REEL</span>
@@ -1753,6 +1886,141 @@
       cursorGlow.style.top = e.clientY + 'px';
     }, { passive: true });
 
+    const hero = document.querySelector('.hero');
+    const heroScene = document.querySelector('.hero-scene');
+    const heroAvatar = document.querySelector('.hero-avatar');
+    const planetOrbit = document.querySelector('.planet-orbit');
+    const planets = [...document.querySelectorAll('.planet')];
+    let heroInView = true;
+    let rimFrame = 0;
+    let planetFrame = 0;
+    let videoOverlayOpen = false;
+    let nativeVideoFullscreen = false;
+    let orbitWidth = planetOrbit.clientWidth;
+    let orbitHeight = planetOrbit.clientHeight;
+    const videos = [...document.querySelectorAll('video')];
+
+    window.addEventListener('resize', () => {
+      orbitWidth = planetOrbit.clientWidth;
+      orbitHeight = planetOrbit.clientHeight;
+    }, { passive: true });
+
+    function isHeroAnimationActive() {
+      return heroInView
+        && !prefersReducedMotion
+        && !document.hidden
+        && !videoOverlayOpen
+        && !nativeVideoFullscreen
+        && !document.fullscreenElement
+        && !document.webkitFullscreenElement;
+    }
+
+    function schedulePlanetFrame() {
+      if (!planetFrame && isHeroAnimationActive()) {
+        planetFrame = requestAnimationFrame(animatePlanets);
+      }
+    }
+
+    function updateHeroAnimation() {
+      const videoIsActive = videoOverlayOpen
+        || nativeVideoFullscreen
+        || document.fullscreenElement
+        || document.webkitFullscreenElement;
+      document.body.classList.toggle('video-open', Boolean(videoIsActive));
+      heroScene.classList.toggle('is-paused', !isHeroAnimationActive());
+
+      if (isHeroAnimationActive()) {
+        schedulePlanetFrame();
+      } else if (planetFrame) {
+        cancelAnimationFrame(planetFrame);
+        planetFrame = 0;
+      }
+    }
+
+    if ('IntersectionObserver' in window) {
+      const heroObserver = new IntersectionObserver(([entry]) => {
+        heroInView = entry.isIntersecting;
+        updateHeroAnimation();
+      }, { threshold: 0 });
+      heroObserver.observe(heroScene);
+    }
+
+    function animatePlanets(timestamp) {
+      planetFrame = 0;
+      if (!isHeroAnimationActive()) {
+        updateHeroAnimation();
+        return;
+      }
+
+      const rx = orbitWidth * 0.43;
+      const ry = orbitHeight * 0.3;
+      const tilt = orbitHeight * 0.12;
+
+      planets.forEach((planet) => {
+        const angle = Number(planet.dataset.phase) + timestamp * Number(planet.dataset.speed);
+        const depth = Math.sin(angle);
+        const x = Math.cos(angle) * rx;
+        const y = Math.sin(angle) * ry + Math.cos(angle) * tilt;
+        const scale = 0.72 + ((depth + 1) / 2) * 0.34;
+        const blur = depth < 0 ? Math.abs(depth) * 1.1 : 0;
+        const opacity = 0.56 + ((depth + 1) / 2) * 0.42;
+
+        planet.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${scale})`;
+        planet.style.filter = `blur(${blur}px) brightness(${0.68 + ((depth + 1) / 2) * 0.42})`;
+        planet.style.opacity = opacity;
+        planet.style.zIndex = depth > 0 ? '3' : '1';
+      });
+
+      schedulePlanetFrame();
+    }
+
+    if (prefersReducedMotion) {
+      planets.forEach((planet, index) => {
+        const angle = Number(planet.dataset.phase);
+        const x = Math.cos(angle) * orbitWidth * 0.43;
+        const y = Math.sin(angle) * orbitHeight * 0.3;
+        planet.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+        planet.style.zIndex = index % 2 ? '1' : '3';
+      });
+    } else {
+      updateHeroAnimation();
+    }
+
+    document.addEventListener('visibilitychange', updateHeroAnimation);
+    document.addEventListener('fullscreenchange', updateHeroAnimation);
+    document.addEventListener('webkitfullscreenchange', updateHeroAnimation);
+    videos.forEach((video) => {
+      video.addEventListener('webkitbeginfullscreen', () => {
+        nativeVideoFullscreen = true;
+        updateHeroAnimation();
+      });
+      video.addEventListener('webkitendfullscreen', () => {
+        nativeVideoFullscreen = false;
+        updateHeroAnimation();
+      });
+    });
+
+    hero.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'touch' || rimFrame) return;
+
+      rimFrame = requestAnimationFrame(() => {
+        const rect = heroAvatar.getBoundingClientRect();
+        const dx = event.clientX - (rect.left + rect.width / 2);
+        const dy = event.clientY - (rect.top + rect.height / 2);
+        const distance = Math.hypot(dx / rect.width, dy / rect.height);
+        const strength = Math.max(0, Math.min(1, (1.05 - distance) / 0.72));
+
+        heroAvatar.style.setProperty('--rim-x', `${Math.max(-18, Math.min(18, dx / rect.width * 28))}px`);
+        heroAvatar.style.setProperty('--rim-y', `${Math.max(-18, Math.min(18, dy / rect.height * 28))}px`);
+        heroAvatar.style.setProperty('--rim-strength', strength.toFixed(2));
+        rimFrame = 0;
+      });
+    }, { passive: true });
+
+    hero.addEventListener('pointerleave', () => {
+      heroAvatar.style.setProperty('--rim-strength', '0');
+    });
+
     document.querySelectorAll('.magnetic').forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
@@ -1829,10 +2097,22 @@
     document.querySelectorAll('.expand-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        videos.forEach((video) => {
+          if (video === modalVideo || video.paused) return;
+          video.pause();
+          const wrap = video.closest('.video-wrap');
+          if (wrap?.classList.contains('previewing')) {
+            video.currentTime = 0;
+            video.muted = false;
+            wrap.classList.remove('previewing');
+          }
+        });
         modalVideo.src = btn.dataset.video;
         if (btn.dataset.poster) modalVideo.poster = btn.dataset.poster;
         modalVideo.muted = false;
+        videoOverlayOpen = true;
         modal.classList.add('open');
+        updateHeroAnimation();
         modalVideo.play();
       });
     });
@@ -1841,6 +2121,8 @@
       modal.classList.remove('open');
       modalVideo.pause();
       modalVideo.src = '';
+      videoOverlayOpen = false;
+      updateHeroAnimation();
     }
 
     modalClose.addEventListener('click', closeModal);
