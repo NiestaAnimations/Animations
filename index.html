@@ -1609,11 +1609,13 @@
 
     function setRevealState(element, visible) {
       if (element === aboutLeadEl) {
+        if (element.classList.contains('words-revealed') === visible) return;
         element.classList.toggle('words-revealed', visible);
         return;
       }
 
       if (element.matches('.pillar-row')) {
+        if (element.classList.contains('box-revealed') === visible) return;
         const index = pillarRows.indexOf(element);
         element.classList.toggle('box-revealed', visible);
         element.style.transitionDelay = visible ? `${index * 110}ms` : '';
@@ -1624,34 +1626,75 @@
         return;
       }
 
+      if (element.classList.contains('visible') === visible) return;
       element.classList.toggle('visible', visible);
     }
 
-    const revealObserver = 'IntersectionObserver' in window
-      ? new IntersectionObserver(entries => {
-          entries.forEach(entry => setRevealState(entry.target, entry.isIntersecting));
-        }, { threshold: 0.12, rootMargin: '-8% 0px -12% 0px' })
-      : null;
-
-    if (revealObserver) {
-      revealEls.forEach(el => revealObserver.observe(el));
-      if (aboutLeadEl) revealObserver.observe(aboutLeadEl);
-      pillarRows.forEach(row => revealObserver.observe(row));
-    }
+    const scrollRevealEls = [...revealEls, aboutLeadEl, ...pillarRows].filter(Boolean);
+    const revealExitTimers = new WeakMap();
 
     function checkVisibleElements() {
-      if (!revealObserver) {
-        const viewportHeight = window.innerHeight;
-        [...revealEls, aboutLeadEl, ...pillarRows].filter(Boolean).forEach(el => {
-          const rect = el.getBoundingClientRect();
-          setRevealState(el, rect.top < viewportHeight * 0.88 && rect.bottom > viewportHeight * 0.12);
-        });
-      }
+      const viewportHeight = window.innerHeight;
+      const enterMargin = viewportHeight * 0.12;
+      const exitMargin = viewportHeight * 0.24;
+
+      const revealStates = scrollRevealEls.map(el => {
+        const rect = el.getBoundingClientRect();
+        const insideEnterZone = rect.top < viewportHeight - enterMargin && rect.bottom > enterMargin;
+        const outsideExitZone = rect.top >= viewportHeight + exitMargin || rect.bottom <= -exitMargin;
+        const isVisible = el === aboutLeadEl
+          ? el.classList.contains('words-revealed')
+          : el.matches('.pillar-row')
+            ? el.classList.contains('box-revealed')
+            : el.classList.contains('visible');
+
+        return { el, insideEnterZone, outsideExitZone, isVisible };
+      });
+
+      revealStates.forEach(({ el, insideEnterZone, outsideExitZone, isVisible }) => {
+        if (!isVisible && insideEnterZone) {
+          const exitTimer = revealExitTimers.get(el);
+          if (exitTimer) {
+            clearTimeout(exitTimer);
+            revealExitTimers.delete(el);
+          }
+          setRevealState(el, true);
+        } else if (isVisible && outsideExitZone) {
+          if (!revealExitTimers.has(el)) {
+            const exitTimer = setTimeout(() => {
+              revealExitTimers.delete(el);
+              const rect = el.getBoundingClientRect();
+              const stillOutsideExitZone =
+                rect.top >= window.innerHeight * 1.24 ||
+                rect.bottom <= -window.innerHeight * 0.24;
+              if (stillOutsideExitZone) setRevealState(el, false);
+            }, 180);
+            revealExitTimers.set(el, exitTimer);
+          }
+        } else {
+          const exitTimer = revealExitTimers.get(el);
+          if (exitTimer) {
+            clearTimeout(exitTimer);
+            revealExitTimers.delete(el);
+          }
+        }
+      });
+
       if (!prefersReducedMotion) updateAboutScrollReveal();
     }
 
-    window.addEventListener('scroll', checkVisibleElements, { passive: true });
-    window.addEventListener('DOMContentLoaded', checkVisibleElements);
+    let revealFrame = null;
+    function scheduleRevealUpdate() {
+      if (revealFrame !== null) return;
+      revealFrame = requestAnimationFrame(() => {
+        revealFrame = null;
+        checkVisibleElements();
+      });
+    }
+
+    window.addEventListener('scroll', scheduleRevealUpdate, { passive: true });
+    window.addEventListener('resize', scheduleRevealUpdate, { passive: true });
+    window.addEventListener('DOMContentLoaded', scheduleRevealUpdate);
     checkVisibleElements();
 
     const soundToggle = document.getElementById('soundToggle');
