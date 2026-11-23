@@ -282,7 +282,7 @@
 
     /* HERO — IDEA 1: DIRECTOR'S REEL */
     .hero {
-      min-height: calc(100vh - 82px);
+      min-height: calc(100svh - 82px);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -293,10 +293,14 @@
 
     .hero-scene {
       position: absolute;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 100vw;
       z-index: 0;
       overflow: hidden;
       pointer-events: none;
+      transform: translateX(-50%);
     }
 
     .hero-scene::before,
@@ -322,23 +326,31 @@
       visibility: hidden;
     }
 
-    .hero-avatar {
-      --rim-x: 0px;
-      --rim-y: 0px;
-      --rim-strength: 0;
+    .hero-avatar,
+    .hero-rim-light {
       position: absolute;
-      z-index: 2;
       right: -8%;
       bottom: -1%;
       width: clamp(620px, 76vw, 1000px);
       max-width: none;
       height: auto;
-      opacity: 0.76;
-      filter:
-        drop-shadow(0 0 20px rgba(147, 51, 234, 0.16))
-        drop-shadow(var(--rim-x) var(--rim-y) calc(26px * var(--rim-strength)) rgba(192, 132, 252, var(--rim-strength)))
-        drop-shadow(0 0 38px rgba(147, 51, 234, calc(var(--rim-strength) * 0.42)));
-      transition: filter 0.4s ease;
+    }
+
+    .hero-avatar {
+      z-index: 2;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.1));
+    }
+
+    .hero-rim-light {
+      z-index: 3;
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity 0.24s ease;
+    }
+
+    .hero-rim-light.is-active {
+      opacity: 0.92;
     }
 
     .planet-orbit {
@@ -377,19 +389,12 @@
     .planet-surface {
       position: absolute;
       inset: 0;
-      overflow: hidden;
       border-radius: inherit;
-      background:
-        radial-gradient(circle at 27% 32%, rgba(13, 10, 28, 0.72) 0 5%, transparent 6%),
-        radial-gradient(circle at 65% 24%, rgba(24, 16, 48, 0.64) 0 8%, transparent 9%),
-        radial-gradient(circle at 68% 66%, rgba(14, 10, 31, 0.68) 0 11%, transparent 12%),
-        radial-gradient(circle at 37% 71%, rgba(34, 20, 61, 0.76) 0 7%, transparent 8%),
-        radial-gradient(circle at 50% 48%, rgba(147, 107, 210, 0.92), rgba(71, 50, 119, 0.96) 58%, rgba(18, 14, 34, 0.98) 100%);
-      box-shadow: inset -10px -8px 18px rgba(4, 3, 10, 0.72), inset 5px 4px 12px rgba(216, 180, 254, 0.25), 0 0 24px rgba(147, 51, 234, 0.2);
+      background: url('assets/planet-reference.png') center / contain no-repeat;
+      filter: hue-rotate(54deg) saturate(1.12) brightness(1.2) drop-shadow(0 0 10px rgba(147, 51, 234, 0.28));
       animation: planetSurfaceSpin 28s linear infinite;
     }
 
-    .planet-surface::before,
     .planet-surface::after {
       content: '';
       position: absolute;
@@ -398,26 +403,16 @@
       pointer-events: none;
     }
 
-    .planet-surface::before {
-      background:
-        radial-gradient(ellipse at 21% 47%, rgba(193, 159, 231, 0.19) 0 2%, transparent 3%),
-        radial-gradient(ellipse at 73% 39%, rgba(12, 9, 27, 0.3) 0 3%, transparent 4%),
-        radial-gradient(ellipse at 43% 17%, rgba(205, 176, 236, 0.16) 0 2%, transparent 3%),
-        radial-gradient(ellipse at 44% 88%, rgba(14, 10, 30, 0.36) 0 4%, transparent 5%);
-      filter: blur(1px);
-    }
-
     .planet-surface::after {
       background: linear-gradient(115deg, rgba(236, 221, 255, 0.24), transparent 38%, rgba(5, 3, 14, 0.34));
+      mask-image: radial-gradient(circle, #000 66%, transparent 72%);
     }
 
     .planet:nth-of-type(3n) .planet-surface {
-      filter: hue-rotate(18deg) brightness(0.88);
       animation-duration: 36s;
     }
 
     .planet:nth-of-type(4n) .planet-surface {
-      filter: hue-rotate(-16deg) brightness(1.08);
       animation-duration: 22s;
     }
 
@@ -464,10 +459,10 @@
 
     .hero h1 {
       font-family: var(--font-hero);
-      font-size: clamp(3rem, 6.5vw, 5.25rem);
+      font-size: clamp(3rem, 4vw, 4.5rem);
       font-weight: 400;
       line-height: 0.91;
-      max-width: 920px;
+      max-width: 100%;
       margin: 0 0 32px;
       display: flex;
       flex-wrap: wrap;
@@ -875,6 +870,7 @@
       padding: 1px;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
       transition: transform 0.25s ease, box-shadow 0.25s ease;
       --mx: 50%;
       --my: 50%;
@@ -1032,6 +1028,24 @@
       line-height: 1.6;
     }
 
+    .project-open-btn {
+      align-self: flex-start;
+      margin-top: 20px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--accent-bright);
+      font: 700 0.78rem var(--font-display);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s ease, gap 0.2s ease;
+    }
+
+    .project-open-btn:hover {
+      color: #fff;
+    }
+
     /* Section 03: Contact */
     .contact-card {
       text-align: center;
@@ -1091,6 +1105,105 @@
       gap: 14px;
     }
 
+    .availability {
+      width: min(100%, 680px);
+      margin: 24px auto 0;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(8, 6, 13, 0.5);
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .availability-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font: 700 0.88rem var(--font-display);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .availability-toggle:hover {
+      color: var(--accent-bright);
+    }
+
+    .availability-chevron {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .availability-toggle[aria-expanded="true"] .availability-chevron {
+      transform: rotate(180deg);
+    }
+
+    .availability-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.42s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+
+    .availability-panel.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .availability-panel-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .availability-days {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    .availability-day {
+      padding: 12px 8px;
+      border: 1px solid rgba(192, 132, 252, 0.16);
+      border-radius: 10px;
+      background: rgba(147, 51, 234, 0.07);
+      text-align: center;
+    }
+
+    .availability-day strong,
+    .availability-day span {
+      display: block;
+    }
+
+    .availability-day strong {
+      margin-bottom: 5px;
+      color: var(--accent-bright);
+      font: 700 0.72rem var(--font-display);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .availability-day span {
+      color: var(--text);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .availability-timezone {
+      padding: 0 18px 14px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-align: right;
+    }
+
     .btn-discord {
       background: #5865F2;
       color: #ffffff;
@@ -1148,7 +1261,7 @@
     .delay-2 { transition-delay: 0.16s; }
     .delay-3 { transition-delay: 0.24s; }
 
-    /* Lightbox Modal */
+    /* Project detail modal */
     .modal {
       position: fixed;
       inset: 0;
@@ -1156,11 +1269,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: clamp(12px, 3vw, 36px);
       z-index: 2000;
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
     .video-open .cursor-glow,
@@ -1170,37 +1284,114 @@
 
     .modal.open {
       opacity: 1;
+      visibility: visible;
       pointer-events: auto;
     }
 
     .modal-content {
       width: 100%;
-      max-width: 960px;
+      max-width: 1220px;
       background: var(--bg-elevated);
       border: 1px solid var(--border-hover);
-      border-radius: 18px;
+      border-radius: 24px;
       overflow: hidden;
       position: relative;
-      transform: scale(0.95);
-      transition: transform 0.25s ease;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      box-shadow: 0 32px 100px rgba(0, 0, 0, 0.52), 0 0 55px rgba(147, 51, 234, 0.12);
+      transform: translateY(18px) scale(0.975);
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .modal.open .modal-content {
-      transform: scale(1);
+      transform: translateY(0) scale(1);
+    }
+
+    .project-preview {
+      position: relative;
+      min-width: 0;
+      align-self: center;
+      background: #030207;
     }
 
     .modal-content video {
       width: 100%;
+      max-height: min(78vh, 760px);
+      aspect-ratio: 16 / 9;
       display: block;
-      max-height: 80vh;
-      background: #000;
+      object-fit: contain;
+      background: #030207;
+    }
+
+    .project-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(28px, 4vw, 54px);
+    }
+
+    .project-info .card-cat {
+      margin-bottom: 14px;
+    }
+
+    .project-info h2 {
+      margin: 0 12px 28px 0;
+      color: var(--text);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      line-height: 1.05;
+    }
+
+    .project-meta {
+      display: grid;
+      gap: 0;
+      margin: 0 0 24px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-meta-row {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr);
+      gap: 12px;
+      padding: 13px 0;
+    }
+
+    .project-meta-row + .project-meta-row {
+      border-top: 1px solid rgba(192, 132, 252, 0.1);
+    }
+
+    .project-meta dt {
+      color: var(--muted);
+      font: 700 0.7rem var(--font-display);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .project-meta dd {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .project-info-copy {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .project-concept-label {
+      margin-bottom: 8px;
+      color: var(--accent-bright);
+      font: 700 0.7rem var(--font-display);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     .modal-close {
       position: absolute;
       top: 14px;
       right: 14px;
-      z-index: 10;
+      z-index: 11;
       background: rgba(0, 0, 0, 0.75);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1209,6 +1400,37 @@
       height: 36px;
       font-size: 1.1rem;
       cursor: pointer;
+    }
+
+    @media (max-width: 860px) {
+      .modal-content {
+        max-width: 620px;
+        max-height: calc(100dvh - 24px);
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+
+      .modal-content video {
+        max-height: 48vh;
+      }
+
+      .project-info {
+        padding: 26px;
+      }
+
+      .project-info h2 {
+        margin-right: 36px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .availability-days {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .availability-day:last-child {
+        grid-column: 1 / -1;
+      }
     }
 
     .toast {
@@ -1241,8 +1463,12 @@
         gap: 32px;
       }
 
-      .hero-avatar {
+      .hero-avatar,
+      .hero-rim-light {
         right: -24%;
+      }
+
+      .hero-avatar {
         opacity: 0.63;
       }
 
@@ -1266,9 +1492,13 @@
         background: linear-gradient(90deg, rgba(8, 6, 13, 0.86), rgba(8, 6, 13, 0.4) 72%, transparent);
       }
 
-      .hero-avatar {
+      .hero-avatar,
+      .hero-rim-light {
         right: -68%;
         width: 780px;
+      }
+
+      .hero-avatar {
         opacity: 0.42;
       }
 
@@ -1309,9 +1539,6 @@
         display: none;
       }
 
-      .hero-avatar {
-        --rim-strength: 0 !important;
-      }
     }
   </style>
 </head>
@@ -1429,7 +1656,7 @@
         <div class="reveal-left">
           <span class="section-tag">02 / SELECTED WORK</span>
           <h2>LET THE MOTION TALK.</h2>
-          <p class="work-sub">Hover any card for instant preview. Selected R6 animations and camera work.</p>
+          <p class="work-sub">Select a project to explore the animation, tools and creative direction.</p>
         </div>
         <div class="filters reveal-right" role="tablist">
           <button class="filter-btn active sfx-hover sfx-click" data-filter="all">All</button>
@@ -1439,7 +1666,7 @@
       </div>
 
       <div class="work-grid">
-        <article class="work-card reveal-left sfx-hover" data-category="cinematic">
+        <article class="work-card reveal-left sfx-hover" data-category="cinematic" data-created="2026-11-22">
           <div class="work-card-inner">
             <div class="video-wrap">
               <video class="clip-video" data-cover="copertine/clip1" poster="copertine/clip1.jpg" src="videos/clip1.mp4" controls preload="metadata" playsinline loop></video>
@@ -1452,11 +1679,12 @@
               <p class="card-desc">
                 Short R6 narrative cutscene animated in Moon Animator. Focused on dynamic camera work, a seamless third-to-first-person (POV) transition, expressive character acting, and comedic timing. No SFX.
               </p>
+              <button class="project-open-btn" type="button">View project <span aria-hidden="true">↗</span></button>
             </div>
           </div>
         </article>
 
-        <article class="work-card reveal delay-1 sfx-hover" data-category="actions">
+        <article class="work-card reveal delay-1 sfx-hover" data-category="actions" data-created="2026-11-21">
           <div class="work-card-inner">
             <div class="video-wrap">
               <video class="clip-video" data-cover="copertine/clip2" poster="copertine/clip2.jpg" src="videos/clip2.mp4" controls preload="metadata" playsinline loop></video>
@@ -1469,11 +1697,12 @@
               <p class="card-desc">
                 Fast-paced R6 melee combat sequence animated in Moon Animator. Focused on punch impact and easing curves, dynamic tracking camera work, aerial slam physics, and expressive character acting. No SFX.
               </p>
+              <button class="project-open-btn" type="button">View project <span aria-hidden="true">↗</span></button>
             </div>
           </div>
         </article>
 
-        <article class="work-card reveal-right delay-2 sfx-hover" data-category="actions">
+        <article class="work-card reveal-right delay-2 sfx-hover" data-category="actions" data-created="2025-02" data-date-precision="month">
           <div class="work-card-inner">
             <div class="video-wrap">
               <video class="clip-video" data-cover="copertine/clip3" poster="copertine/clip3.jpg" src="videos/clip3.mp4" controls preload="metadata" playsinline loop></video>
@@ -1486,6 +1715,7 @@
               <p class="card-desc">
                 An Inazuma Eleven-inspired R6 action sequence animated in Moon Animator. Focused on aerial spiral rotations, prop-to-character physics synchronization, dynamic camera tracking, and expressive character acting. No SFX.
               </p>
+              <button class="project-open-btn" type="button">View project <span aria-hidden="true">↗</span></button>
             </div>
           </div>
         </article>
@@ -1506,6 +1736,26 @@
           </a>
           <button class="btn btn-secondary magnetic sfx-hover sfx-click" id="copyDiscordBtn">Copy Discord ID</button>
         </div>
+        <div class="availability">
+          <button class="availability-toggle" id="availabilityToggle" type="button" aria-expanded="false" aria-controls="availabilityPanel">
+            <span id="availabilityLabel">Show calendar</span>
+            <svg class="availability-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="availability-panel" id="availabilityPanel" aria-hidden="true">
+            <div class="availability-panel-inner">
+              <div class="availability-days">
+                <div class="availability-day"><strong>Tuesday</strong><span>15:00–20:00</span></div>
+                <div class="availability-day"><strong>Wednesday</strong><span>15:00–20:00</span></div>
+                <div class="availability-day"><strong>Thursday</strong><span>15:00–20:00</span></div>
+                <div class="availability-day"><strong>Friday</strong><span>15:00–20:00</span></div>
+                <div class="availability-day"><strong>Saturday</strong><span>15:00–20:00</span></div>
+              </div>
+              <p class="availability-timezone">All times are in Italy time (Europe/Rome).</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -1518,9 +1768,27 @@
   </footer>
 
   <div class="modal" id="videoModal" aria-hidden="true">
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
       <button class="modal-close sfx-click" id="modalClose" aria-label="Close">✕</button>
-      <video id="modalVideo" controls playsinline></video>
+      <div class="project-preview">
+        <video id="modalVideo" controls playsinline></video>
+      </div>
+      <div class="project-info">
+        <span class="card-cat" id="projectCategory"></span>
+        <h2 id="projectModalTitle"></h2>
+        <dl class="project-meta">
+          <div class="project-meta-row">
+            <dt>Tools</dt>
+            <dd id="projectTools"></dd>
+          </div>
+          <div class="project-meta-row">
+            <dt>Created</dt>
+            <dd><time id="projectCreated"></time></dd>
+          </div>
+        </dl>
+        <span class="project-concept-label">Concept</span>
+        <p class="project-info-copy" id="projectDescription"></p>
+      </div>
     </div>
   </div>
 
@@ -1889,6 +2157,10 @@
     const hero = document.querySelector('.hero');
     const heroScene = document.querySelector('.hero-scene');
     const heroAvatar = document.querySelector('.hero-avatar');
+    const heroRimLight = document.createElement('canvas');
+    heroRimLight.className = 'hero-rim-light';
+    heroRimLight.setAttribute('aria-hidden', 'true');
+    heroScene.append(heroRimLight);
     const planetOrbit = document.querySelector('.planet-orbit');
     const planets = [...document.querySelectorAll('.planet')];
     let heroInView = true;
@@ -1898,12 +2170,67 @@
     let nativeVideoFullscreen = false;
     let orbitWidth = planetOrbit.clientWidth;
     let orbitHeight = planetOrbit.clientHeight;
+    let heroRimMask = null;
     const videos = [...document.querySelectorAll('video')];
 
     window.addEventListener('resize', () => {
       orbitWidth = planetOrbit.clientWidth;
       orbitHeight = planetOrbit.clientHeight;
     }, { passive: true });
+
+    function createAvatarRimMask() {
+      if (!heroAvatar.complete || !heroAvatar.naturalWidth) return;
+
+      const maskWidth = 512;
+      const maskHeight = Math.round(maskWidth * heroAvatar.naturalHeight / heroAvatar.naturalWidth);
+      const maskCanvas = document.createElement('canvas');
+      maskCanvas.width = maskWidth;
+      maskCanvas.height = maskHeight;
+      const maskContext = maskCanvas.getContext('2d', { willReadFrequently: true });
+      maskContext.drawImage(heroAvatar, 0, 0, maskWidth, maskHeight);
+
+      const imageData = maskContext.getImageData(0, 0, maskWidth, maskHeight);
+      const sourceAlpha = new Uint8Array(maskWidth * maskHeight);
+      for (let pixel = 0; pixel < sourceAlpha.length; pixel++) {
+        sourceAlpha[pixel] = imageData.data[pixel * 4 + 3];
+      }
+
+      const edgeData = maskContext.createImageData(maskWidth, maskHeight);
+      for (let y = 1; y < maskHeight - 1; y++) {
+        for (let x = 1; x < maskWidth - 1; x++) {
+          const pixel = y * maskWidth + x;
+          const alpha = sourceAlpha[pixel];
+          if (alpha < 24) continue;
+
+          const nearestTransparent = Math.min(
+            sourceAlpha[pixel - 1],
+            sourceAlpha[pixel + 1],
+            sourceAlpha[pixel - maskWidth],
+            sourceAlpha[pixel + maskWidth]
+          );
+          const edgeAlpha = Math.round(alpha * (255 - nearestTransparent) / 255);
+          if (edgeAlpha < 12) continue;
+
+          const offset = pixel * 4;
+          edgeData.data[offset] = 220;
+          edgeData.data[offset + 1] = 190;
+          edgeData.data[offset + 2] = 255;
+          edgeData.data[offset + 3] = edgeAlpha;
+        }
+      }
+
+      maskContext.putImageData(edgeData, 0, 0);
+      heroRimMask = maskCanvas;
+      heroRimLight.width = maskWidth;
+      heroRimLight.height = maskHeight;
+      heroRimLight.getContext('2d').drawImage(maskCanvas, 0, 0);
+    }
+
+    if (heroAvatar.complete) {
+      createAvatarRimMask();
+    } else {
+      heroAvatar.addEventListener('load', createAvatarRimMask, { once: true });
+    }
 
     function isHeroAnimationActive() {
       return heroInView
@@ -2001,24 +2328,36 @@
     });
 
     hero.addEventListener('pointermove', (event) => {
-      if (event.pointerType === 'touch' || rimFrame) return;
+      if (event.pointerType === 'touch' || rimFrame || !heroRimMask) return;
 
       rimFrame = requestAnimationFrame(() => {
         const rect = heroAvatar.getBoundingClientRect();
-        const dx = event.clientX - (rect.left + rect.width / 2);
-        const dy = event.clientY - (rect.top + rect.height / 2);
-        const distance = Math.hypot(dx / rect.width, dy / rect.height);
-        const strength = Math.max(0, Math.min(1, (1.05 - distance) / 0.72));
+        const scaleX = heroRimLight.width / rect.width;
+        const scaleY = heroRimLight.height / rect.height;
+        const x = (event.clientX - rect.left) * scaleX;
+        const y = (event.clientY - rect.top) * scaleY;
+        const radius = Math.min(heroRimLight.width, heroRimLight.height) * 0.42;
+        const context = heroRimLight.getContext('2d');
+        const light = context.createRadialGradient(x, y, 0, x, y, radius);
+        light.addColorStop(0, 'rgba(230, 211, 255, 0.92)');
+        light.addColorStop(0.28, 'rgba(192, 132, 252, 0.72)');
+        light.addColorStop(0.62, 'rgba(147, 51, 234, 0.3)');
+        light.addColorStop(1, 'rgba(147, 51, 234, 0)');
 
-        heroAvatar.style.setProperty('--rim-x', `${Math.max(-18, Math.min(18, dx / rect.width * 28))}px`);
-        heroAvatar.style.setProperty('--rim-y', `${Math.max(-18, Math.min(18, dy / rect.height * 28))}px`);
-        heroAvatar.style.setProperty('--rim-strength', strength.toFixed(2));
+        context.clearRect(0, 0, heroRimLight.width, heroRimLight.height);
+        context.globalCompositeOperation = 'source-over';
+        context.drawImage(heroRimMask, 0, 0);
+        context.globalCompositeOperation = 'source-in';
+        context.fillStyle = light;
+        context.fillRect(0, 0, heroRimLight.width, heroRimLight.height);
+        context.globalCompositeOperation = 'source-over';
+        heroRimLight.classList.add('is-active');
         rimFrame = 0;
       });
     }, { passive: true });
 
     hero.addEventListener('pointerleave', () => {
-      heroAvatar.style.setProperty('--rim-strength', '0');
+      heroRimLight.classList.remove('is-active');
     });
 
     document.querySelectorAll('.magnetic').forEach(btn => {
@@ -2093,36 +2432,139 @@
     const modal = document.getElementById('videoModal');
     const modalVideo = document.getElementById('modalVideo');
     const modalClose = document.getElementById('modalClose');
+    const projectCategory = document.getElementById('projectCategory');
+    const projectModalTitle = document.getElementById('projectModalTitle');
+    const projectTools = document.getElementById('projectTools');
+    const projectCreated = document.getElementById('projectCreated');
+    const projectDescription = document.getElementById('projectDescription');
+    const relativeDate = new Intl.RelativeTimeFormat('en', { numeric: 'always' });
+    let projectModalTrigger = null;
 
-    document.querySelectorAll('.expand-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        videos.forEach((video) => {
-          if (video === modalVideo || video.paused) return;
-          video.pause();
-          const wrap = video.closest('.video-wrap');
-          if (wrap?.classList.contains('previewing')) {
-            video.currentTime = 0;
-            video.muted = false;
-            wrap.classList.remove('previewing');
-          }
-        });
-        modalVideo.src = btn.dataset.video;
-        if (btn.dataset.poster) modalVideo.poster = btn.dataset.poster;
-        modalVideo.muted = false;
-        videoOverlayOpen = true;
-        modal.classList.add('open');
-        updateHeroAnimation();
-        modalVideo.play();
+    function getItalyDateParts(date = new Date()) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Europe/Rome',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }).formatToParts(date);
+      return Object.fromEntries(parts.map(part => [part.type, Number(part.value)]));
+    }
+
+    function getProjectAge(created, precision) {
+      const [year, month, day] = created.split('-').map(Number);
+      const today = getItalyDateParts();
+      const monthDifference = (today.year - year) * 12 + today.month - month;
+
+      if (precision === 'month') {
+        if (monthDifference < 0) return relativeDate.format(monthDifference, 'month');
+        if (monthDifference === 0) return 'this month';
+        const years = Math.floor(monthDifference / 12);
+        return years ? relativeDate.format(-years, 'year') : relativeDate.format(-monthDifference, 'month');
+      }
+
+      const createdUtc = Date.UTC(year, month - 1, day);
+      const todayUtc = Date.UTC(today.year, today.month - 1, today.day);
+      const dayDifference = Math.floor((todayUtc - createdUtc) / 86400000);
+      if (dayDifference <= 0) return dayDifference === 0 ? 'today' : relativeDate.format(dayDifference, 'day');
+      if (dayDifference < 30) return relativeDate.format(-dayDifference, 'day');
+
+      const completedMonths = monthDifference - (today.day < day ? 1 : 0);
+      if (completedMonths < 12) return relativeDate.format(-Math.max(1, completedMonths), 'month');
+      const completedYears = today.year - year - (
+        today.month < month || (today.month === month && today.day < day) ? 1 : 0
+      );
+      return relativeDate.format(-Math.max(1, completedYears), 'year');
+    }
+
+    function formatProjectDate(created, precision) {
+      const [year, month, day] = created.split('-').map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day || 1, 12));
+      const options = precision === 'month'
+        ? { month: 'long', year: 'numeric', timeZone: 'Europe/Rome' }
+        : { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Europe/Rome' };
+      return `${new Intl.DateTimeFormat('en-US', options).format(date)} · ${getProjectAge(created, precision)}`;
+    }
+
+    function refreshProjectDate() {
+      const card = projectModalTrigger?.closest('.work-card');
+      if (!card) return;
+      const created = card.dataset.created;
+      const precision = card.dataset.datePrecision || 'day';
+      projectCreated.dateTime = created;
+      projectCreated.textContent = formatProjectDate(created, precision);
+    }
+
+    function updateProjectDates() {
+      if (modal.classList.contains('open')) refreshProjectDate();
+    }
+
+    function openProject(card, trigger) {
+      projectModalTrigger = trigger || card;
+      const clip = card.querySelector('.clip-video');
+      const description = card.querySelector('.card-desc');
+      const title = card.querySelector('.card-title');
+      const category = card.querySelector('.card-cat');
+      const created = card.dataset.created;
+      const precision = card.dataset.datePrecision || 'day';
+
+      videos.forEach((video) => {
+        if (video === modalVideo || video.paused) return;
+        video.pause();
+        const wrap = video.closest('.video-wrap');
+        if (wrap?.classList.contains('previewing')) {
+          video.currentTime = 0;
+          video.muted = false;
+          wrap.classList.remove('previewing');
+        }
+      });
+
+      projectCategory.textContent = category.textContent;
+      projectModalTitle.textContent = title.textContent;
+      projectTools.textContent = 'Moon Animator';
+      projectDescription.textContent = description.textContent.trim();
+      projectCreated.dateTime = created;
+      projectCreated.textContent = formatProjectDate(created, precision);
+      modalVideo.src = clip.getAttribute('src');
+      modalVideo.poster = clip.poster;
+      modalVideo.muted = false;
+      videoOverlayOpen = true;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      updateHeroAnimation();
+      modalClose.focus();
+      modalVideo.play().catch((error) => {
+        if (error.name !== 'NotAllowedError' && error.name !== 'AbortError') {
+          console.error('Unable to play the selected project video.', error);
+        }
+      });
+    }
+
+    workCards.forEach((card) => {
+      card.addEventListener('click', (event) => {
+        if (event.target.closest('button, video, a')) return;
+        openProject(card, event.target);
+      });
+      card.querySelector('.project-open-btn').addEventListener('click', (event) => {
+        event.stopPropagation();
+        openProject(card, event.currentTarget);
+      });
+      card.querySelector('.expand-btn').addEventListener('click', (event) => {
+        event.stopPropagation();
+        openProject(card, event.currentTarget);
       });
     });
 
+    document.addEventListener('visibilitychange', updateProjectDates);
+    window.setInterval(updateProjectDates, 60 * 60 * 1000);
+
     function closeModal() {
       modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
       modalVideo.pause();
       modalVideo.src = '';
       videoOverlayOpen = false;
       updateHeroAnimation();
+      projectModalTrigger?.focus();
     }
 
     modalClose.addEventListener('click', closeModal);
@@ -2131,6 +2573,17 @@
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    const availabilityToggle = document.getElementById('availabilityToggle');
+    const availabilityPanel = document.getElementById('availabilityPanel');
+    const availabilityLabel = document.getElementById('availabilityLabel');
+    availabilityToggle.addEventListener('click', () => {
+      const isExpanded = availabilityToggle.getAttribute('aria-expanded') === 'true';
+      availabilityToggle.setAttribute('aria-expanded', String(!isExpanded));
+      availabilityLabel.textContent = isExpanded ? 'Show calendar' : 'Hide calendar';
+      availabilityPanel.setAttribute('aria-hidden', String(isExpanded));
+      availabilityPanel.classList.toggle('is-open', !isExpanded);
     });
 
     const DISCORD_TAG = "795381716919255101";
