@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NIESTA — R6 Animator &amp; Director's Reel</title>
   <meta name="description" content="Director's reel of NIESTA, independent Roblox animator specializing in R6 and Moon Animator." />
+  <meta name="theme-color" content="#08060d" />
+  <link rel="icon" type="image/png" href="logos/niesta-mark.png" sizes="159x157" />
+  <link rel="apple-touch-icon" href="logos/niesta-mark.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -134,23 +137,25 @@
     }
 
     .brand {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.2rem;
-      letter-spacing: 0.14em;
-      color: var(--text);
+      flex: 0 0 auto;
+      width: 154px;
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 10px;
+      border-radius: 6px;
+      transition: filter 0.25s ease, transform 0.25s ease;
     }
 
-    .brand-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent-pink));
-      box-shadow: 0 0 14px var(--accent-bright);
+    .brand img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .brand:hover {
+      filter: drop-shadow(0 0 12px rgba(192, 132, 252, 0.38));
+      transform: translateY(-1px);
     }
 
     .nav-actions {
@@ -1125,6 +1130,7 @@
 
     @media (max-width: 680px) {
       .nav-links { display: none; }
+      .brand { width: 136px; }
       section { padding: 76px 0; }
       .expand-btn { opacity: 1; }
       .hero h1 {
@@ -1178,8 +1184,7 @@
   <header>
     <div class="nav-inner">
       <a href="#" class="brand sfx-hover sfx-click">
-        <span class="brand-dot"></span>
-        NIESTA
+        <img src="logos/niesta-wordmark.png" alt="NIESTA" width="973" height="228" />
       </a>
       <div class="nav-actions">
         <nav class="nav-links">
